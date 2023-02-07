@@ -1,11 +1,33 @@
-import { Button, Form as Formulary, Row, Col } from 'react-bootstrap';
+import { useState } from 'react';
+import { Button, Form as Formulary, Row, Col, Alert } from 'react-bootstrap';
 import useCategories from '../hooks/useCategories';
 
 const Form = () => {
+  const [search, setSearch] = useState({
+    name: '',
+    category: ''
+  });
+  const [alert, setAlert] = useState('');
+
   const { categories } = useCategories();
 
+  const handleSubmit = e => {
+    e.preventDefault();
+
+    if (Object.values(search).includes('')) {
+      setAlert('Todos os campos são obrigatórios');
+      return;
+    }
+    setAlert('');
+  };
+
   return (
-    <Formulary>
+    <Formulary onSubmit={handleSubmit}>
+      {alert && (
+        <Alert variant="danger" className="text-center">
+          {alert}
+        </Alert>
+      )}
       <Row>
         <Col md={6}>
           <Formulary.Group className="mb-3">
@@ -16,14 +38,31 @@ const Form = () => {
               id="drink-name"
               type="text"
               placeholder="Ex. Tequila, Vodka, etc"
-              name="drink-name"
+              name="name"
+              onChange={e =>
+                setSearch({
+                  ...search,
+                  [e.target.name]: e.target.value
+                })
+              }
+              value={search.name}
             />
           </Formulary.Group>
         </Col>
         <Col md={6}>
           <Formulary.Group className="mb-3">
             <Formulary.Label htmlFor="category">Categoria</Formulary.Label>
-            <Formulary.Select id="category" name="category">
+            <Formulary.Select
+              id="category"
+              name="category"
+              onChange={e =>
+                setSearch({
+                  ...search,
+                  [e.target.name]: e.target.value
+                })
+              }
+              value={search.category}
+            >
               <option>-- Selecionar Categoria --</option>
               {categories.map(cat => (
                 <option key={cat.strCategory} value={cat.strCategory}>
@@ -37,9 +76,12 @@ const Form = () => {
       <Row className="justify-content-end">
         <Col md={3}>
           <Button
-            variant='danger'
-            className='text-uppercase w-100'
-          >Buscar Bebidas</Button>
+            type="submit"
+            variant="danger"
+            className="text-uppercase w-100"
+          >
+            Buscar Bebidas
+          </Button>
         </Col>
       </Row>
     </Formulary>
