@@ -6,26 +6,25 @@ const DrinksContext = createContext();
 const DrinksProvider = ({ children }) => {
   const [drinks, setDrinks] = useState([]);
 
-  const getDrinks = async () => {
+  const getDrinks = async data => {
     try {
-      const url = 'https://www.thecocktaildb.com/api/json/v1/1/list.php?c=list';
+      const url = `https://www.thecocktaildb.com/api/json/v1/1/filter.php?i=${data.name}&c=${data.category}`;
 
-      const { data } = await axios(url);
+      const {
+        data: { drinks }
+      } = await axios(url);
 
-      setDrinks(data.drinks);
+      setDrinks(drinks);
     } catch (error) {
       console.error(error);
     }
   };
 
-  useEffect(() => {
-    getDrinks();
-  }, []);
-
   return (
     <DrinksContext.Provider
       value={{
-        drinks
+        drinks,
+        getDrinks
       }}
     >
       {children}
