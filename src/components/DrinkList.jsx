@@ -1,0 +1,17 @@
+import { Row } from 'react-bootstrap';
+import useDrinks from '../hooks/useDrinks';
+import Drink from './Drink';
+
+const DrinkList = () => {
+  const { drinks } = useDrinks();
+
+  return (
+    <Row>
+      {drinks.map(drink => (
+        <Drink key={drink.idDrink} drink={drink} />
+      ))}
+    </Row>
+  );
+};
+
+export default DrinkList;
